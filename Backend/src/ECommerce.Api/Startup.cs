@@ -48,11 +48,13 @@ namespace ECommerce.Api
             services.ResolveDependencies();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider, ECommerceDbContext context)
         {
             app.UseApiConfig(env);
 
             app.UseSwaggerConfig(provider);
+
+            context.Database.Migrate();
         }
     }
 }

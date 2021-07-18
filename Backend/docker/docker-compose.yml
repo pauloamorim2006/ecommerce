@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres
+    container_name: ecommerce-postgre
+    env_file:
+      - postgre.env
+    ports:
+      - 5432:5432
+    volumes:
+      - postgre-data:/var/lib/postgresql/data/    
+        
+  mongo:
+    image: mongo
+    container_name: ecommerce-mongo
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - mongo-data:/var/lib/mongodb/data/ 
+
+  api:
+    image: ecommerce/ecommerce-api:latest
+    container_name: ecommerce-api
+    build:
+        context: ../src
+        dockerfile: ./ECommerce.Api/Dockerfile
+    restart: always 
+    ports:
+      - "20000:80"           
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production     
+    depends_on:
+        - postgres
+        - mongo
+            
+volumes:
+  postgre-data:   
+  mongo-data:         
